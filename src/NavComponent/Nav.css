@@ -1,88 +1,68 @@
-.hoverButton {
-  /* background-color: #f2e1c9 !important; */
-  color: black;
-  margin-right: 10px;
+/* NavBar.css */
+.navbar {
+  background-color: #333;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  position: sticky;
+  top: 0;
+  z-index: 999;
 }
 
-/* .hoverButton :hover{
-    background-color: #5597c8 !important;
-    color: #5597c8 !important;
-    } */
-
-.nav-link {
-  cursor: pointer;
+.activeClass {
+  /* background-color: yellow; */
+  color: #f44336 !important;
 }
 
-.navButton {
-  margin-right: 20px;
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px;
 }
 
-.navBackground {
-  background-color: #5597c8 !important;
-  padding-left: 10px;
+.navbar-logo {
+  color: #fff;
+  text-decoration: none;
+  font-size: 2rem;
+}
+
+.nav-menu {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  margin: 0; /* Add this line to reset margin */
 }
 
 .nav-item {
-  /* background-color: #f2e1c9; */
-  border-radius: 5px;
-  margin-left: 10px;
-  color: black;
-  list-style: none inside;
-  text-align: left;
+  margin-right: 20px;
 }
 
-.nav-item :hover {
-  /* background-color: #f0dbbc; */
-  background-color: #76bef6;
-  border-radius: 5px;
-  /* margin-left: 10px; */
-  color: black;
+.nav-links {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s;
 }
 
-.nav-link {
-  color: black;
+.nav-links:hover {
+  color: #f44336;
 }
 
-.nav-link :hover {
-  /* color: rgb(68, 65, 65) !important; */
-  color: rgb(245, 238, 238);
-  font-weight: 200px;
-}
+/* Responsive */
+@media screen and (max-width: 960px) {
+  .navbar {
+    height: 70px;
+  }
 
-.nav-item ul {
-  position: absolute;
-  padding: 0;
-  left: 0;
-  display: none;
-}
+  .navbar-logo {
+    font-size: 1.5rem;
+  }
 
-.nav-item :hover ul {
-  display: block;
-}
-
-.nav-item li:hover ul {
-  display: block;
-}
-
-.nav-item li {
-  display: block;
-  position: relative;
-}
-
-.sub-menu {
-  /*border-radius: 1px; */
-  /* padding: 10px; */
-  /* margin-top: 3px; */
-  /*margin-left: 0.1px; */
-  /* position: relative; */
-  top: 0px;
-  left: 0px;
-  /* margin-left: 0px; */
-  /* margin-bottom: 25px; */
-  color: black;
-  list-style: none;
-  text-align: middle;
-  font-size: 15px;
-  /* background-color: rgb(141, 117, 129); */
-  /* border: 0px solid black; */
+  .nav-menu {
+    display: none;
+  }
 }

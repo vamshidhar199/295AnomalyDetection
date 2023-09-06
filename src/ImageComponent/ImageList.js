@@ -1,41 +1,141 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ImageList.css";
+import AWS from "aws-sdk";
 import axios from "axios";
-import { createWriteStream } from "streamsaver";
-import { saveAs } from "file-saver";
+
+const loadYoloAnnotations = (imageName) => {
+  // Replace with the correct URL to your YOLO annotation file
+  // const annotationUrl = `http://localhost:YOUR_PORT/annotations/${imageName.replace(
+  //   ".jpg",
+  //   ".txt"
+  // )}`;
+
+  const annotationUrl = `https://masterprojectbucket.s3.amazonaws.com/ReportAnnotation/img023621.txt`;
+  let parsedAnnotation;
+  axios.get(annotationUrl).then((response) => {
+    console.log(response.data);
+    parsedAnnotation = response.data
+      .trim()
+      .split("\n")
+      .map((line) => {
+        const [classId, x_center, y_center, width, height] = line.split(" ");
+        return {
+          classId,
+          x_center,
+          y_center,
+          width,
+          height,
+        };
+      });
+  });
+
+  return parsedAnnotation;
+};
+
 const ImageList = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedList, setSelectedList] = useState();
-  const images = [
-    {
-      name: "Image 1",
-      url: "https://dummyimage.com/300x300/000/fff&text=Image+1",
-    },
-    {
-      name: "Image 2",
-      url: "https://dummyimage.com/300x300/000/fff&text=Image+2",
-    },
-    {
-      name: "Image 3",
-      url: "https://dummyimage.com/300x300/000/fff&text=Image+3",
-    },
-    {
-      name: "Image 4",
-      url: "https://dummyimage.com/300x300/000/fff&text=Image+4",
-    },
-    {
-      name: "Image 5",
-      url: "https://dummyimage.com/300x300/000/fff&text=Image+5",
-    },
-  ];
+  const [images1, setImages] = useState([]);
+  const [imageUrl, setImageUrl] = useState("");
+  const s3 = new AWS.S3({
+    accessKeyId: "AKIARWZZ67ATZUF5ROV6",
+    secretAccessKey: "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",
+  });
+  const params = {
+    Bucket: "masterprojectbucket",
+    Prefix: "ReportImages/",
+  };
 
+  useEffect(() => {
+    async function fetchImages() {
+      const data = await s3.listObjectsV2(params).promise();
+      const objects = data.Contents.filter((object) => {
+        return object.Key !== "ReportImages/";
+      });
+      console.log(data.Contents);
+      setImages(objects);
+    }
+
+    fetchImages();
+  }, []);
+
+  // Function to render bounding boxes on the second image
+  const renderAnnotations = (imageJson) => {
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    // Load the selected image onto the canvas
+    const img = new Image();
+    img.src = imageJson.url;
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      const annotationUrl = `https://masterprojectbucket.s3.amazonaws.com/ReportAnnotation/img003706.txt`;
+      let yoloAnnotations;
+      axios.get(annotationUrl).then((response) => {
+        console.log(response.data);
+        yoloAnnotations = response.data
+          .trim()
+          .split("\n")
+          .map((line) => {
+            const [classId, x_center, y_center, width, height] =
+              line.split(" ");
+            return {
+              classId,
+              x_center,
+              y_center,
+              width,
+              height,
+            };
+          });
+        for (const annotation of yoloAnnotations) {
+          const x = annotation.x_center * canvas.width;
+          const y = annotation.y_center * canvas.height;
+          const width = annotation.width * canvas.width;
+          const height = annotation.height * canvas.height;
+          ctx.strokeStyle = "red"; // Customize the bounding box color
+          ctx.lineWidth = 2; // Customize the bounding box line width
+          ctx.strokeRect(x - width / 2, y - height / 2, width, height);
+
+          ctx.fillStyle = "red"; // Customize the label text color
+          ctx.font = "16px Arial"; // Customize the label font
+          ctx.fillText(annotation.classId, x - width / 2, y - height / 2 - 5); // Adjust label position
+        }
+      });
+      // Draw bounding boxes and labels
+    };
+  };
+
+  const getImage = (imageName) => {
+    // const imageName = "YOUR_IMAGE_NAME.jpg"; // Replace with the name of your image file
+    s3.getObject(
+      { Bucket: "masterprojectbucket", Key: `ReportImages/${imageName}` },
+      (err, data) => {
+        if (err) {
+          console.log(err, err.stack);
+        } else {
+          const imageUrl = URL.createObjectURL(new Blob([data.Body]));
+          setImageUrl(imageUrl);
+          const imageJson = {
+            name: imageName,
+
+            url: imageUrl,
+          };
+          setSelectedImage(imageJson);
+          renderAnnotations(imageJson);
+        }
+      }
+    );
+  };
   const handleImageClick = (image, index) => {
     setSelectedList(index);
-    setSelectedImage(image);
+    getImage(image);
   };
 
   const handleReport = async (image) => {
-    const url = `http://localhost:8501/?image=${image}.jpg`;
+    const url = `http://localhost:8501/?image=${image}`;
     window.open(url, "_blank").focus();
   };
   return (
@@ -43,13 +143,23 @@ const ImageList = () => {
       <div className="image-list">
         <h2>Image List</h2>
         <ul>
-          {images.map((image, index) => (
-            <li key={index} className={selectedList == index ? "active" : ""}>
+          {images1.map((image, index) => (
+            <li
+              key={index}
+              className={
+                selectedList == index ? "active listClass" : "listClass"
+              }
+            >
               <div
                 className="image-name"
-                onClick={() => handleImageClick(image, index)}
+                onClick={() =>
+                  handleImageClick(
+                    image.Key.replace("ReportImages/", ""),
+                    index
+                  )
+                }
               >
-                {image.name}
+                {image.Key.replace("ReportImages/", "")}
               </div>
             </li>
           ))}
@@ -59,8 +169,13 @@ const ImageList = () => {
         <div className="selected-image">
           <h3>{selectedImage.name}</h3>
           <div className="image-wrapper">
-            <img src={selectedImage.url} alt={selectedImage.name} />
-            <img src={selectedImage.url} alt={selectedImage.name} />
+            {/* <img src={selectedImage.url} alt={selectedImage.name} /> */}
+            {/* <img
+              id="secondImage"
+              src={selectedImage.url}
+              alt={selectedImage.name}
+            /> */}
+            <canvas id="canvas" width="100px"></canvas>
           </div>
           <div className="reportDiv">
             <button

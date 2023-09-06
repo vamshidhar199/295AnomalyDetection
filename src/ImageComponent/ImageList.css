@@ -17,7 +17,7 @@ ul {
   margin: 10px;
 }
 
-li {
+.listClass {
   margin-bottom: 10px;
   position: relative;
   background-color: rgb(195 187 187 / 50%);
@@ -37,7 +37,7 @@ li {
   border-radius: 10px;
   color: white;
 }
-li:hover {
+.listClass:hover {
   margin-bottom: 10px;
   position: relative;
   background-color: #0071e3;
@@ -111,8 +111,7 @@ li:hover {
 }
 
 .image-wrapper img {
-  max-width: 100%;
-  height: auto;
+  height: 400px;
   margin: 10px;
 }
 .reportDiv {
