@@ -1,0 +1,25 @@
+ROS BRIDGE : to launch ros bridge 
+1) source /opt/ros/<ROS_DISTRO>/setup.bash
+2) ros2 launch rosbridge_server rosbridge_websocket_launch.xml
+
+
+ROS PIPELINE : launch
+cd ~/workspaces/isaac_ros-dev/src/isaac_ros_common
+./scripts/run_dev.sh
+
+Inside Container
+
+pip install -r src/requirements.txt
+cd /workspaces/isaac_ros-dev
+colcon build --symlink-install
+source install/setup.bash
+
+if running with pipeline for first time 
+ros2 launch yolov5_isaac_ros isaac_ros_yolov5_tensor_rt.launch.py model_file_path:=/workspaces/isaac_ros-dev/src/yolov5s.onnx engine_file_path:=/workspaces/isaac_ros-dev/src/yolov5s.plan input_binding_names:=['images'] output_binding_names:=['output0'] network_image_width:=640 network_image_height:=640
+
+consecutive runs
+ros2 launch yolov5_isaac_ros isaac_ros_yolov5_tensor_rt.launch.py engine_file_path:=/workspaces/isaac_ros-dev/src/yolov5s.plan input_binding_names:=['images'] output_binding_names:=['output0'] network_image_width:=640 network_image_height:=640
+
+in another terminal
+source /opt/ros/foxy/setup.sh
+python3 ~/workspace/calibration/LaunchCamera.py

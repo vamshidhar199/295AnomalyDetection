@@ -1,0 +1,77 @@
+/* ImageDisplay.css */
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.loading-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  animation: loadingAnimation 1.5s infinite;
+  /* padding: 10px; */
+  /* margin: 10px; */
+}
+.side-loading-text {
+  font-size: 1rem;
+  font-weight: bold;
+  animation: loadingAnimation 1.5s infinite;
+  /* padding: 10px; */
+  /* margin: 10px; */
+}
+@keyframes loadingAnimation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.image-container {
+  position: relative;
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 2%;
+}
+
+.image {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.image-frame {
+  border: 3px solid #000; /* Adjust border color as needed */
+  border-radius: 10px; /* Optional: for rounded corners */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: for a shadow effect */
+  overflow: hidden; /* To ensure the image doesn't overflow the border */
+  margin: 15px;
+  width: 90%; /* Adjust width as necessary */
+  height: 90%; /* Adjust height as necessary */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #4c4848; /* Adjust background color as needed */
+}
+
+.side-text {
+  display: block;
+  margin: 10px 0; /* Adjust as needed */
+  padding: 10px; /* Adjust as needed */
+  background-color: #4caf50; /* Adjust background color as needed */
+  color: white; /* Adjust text color as needed */
+  border-radius: 5px; /* Optional: for rounded corners */
+  text-align: center;
+}
+
+.side-text.block {
+  background-color: #2196f3; /* Adjust background color as needed */
+  margin-bottom: 10px; /* Adjust as needed */
+}
