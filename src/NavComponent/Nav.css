@@ -1,14 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Gabarito:wght@500&family=Poppins:wght@300&display=swap");
 /* NavBar.css */
 .navbar {
   background-color: #333;
   height: 50px;
   display: flex;
-  justify-content: center;
+  /* justify-content: right; */
   align-items: center;
   font-size: 1.2rem;
   position: sticky;
   top: 0;
   z-index: 999;
+  font-family: "Gabarito", sans-serif;
+  font-family: "Poppins", sans-serif;
+}
+
+.nav-title {
+  /* flex-grow: 1; Allow the title to take up the available space */
+  font-size: 24px; /* Set font size for the title */
+  font-weight: bold; /* Set font weight for the title */
+  padding-left: 20px; /* Add some padding to the left of the title */
+  /* Add any other styling you wish for the title */
+  color: #fff; /* White text color */
+  text-shadow: 1px 1px 2px #000,
+    /* Black text shadow */ /* Orange glow effect */; /* Red glow effect */
+  font-family: "Gabarito", sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .activeClass {

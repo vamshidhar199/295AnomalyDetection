@@ -7,6 +7,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import Nav from "./NavComponent/Nav";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ImageDisplay from "./LiveFeed/test";
+import Home from "./Home/Home";
 function App() {
   return (
     <div className="App">
@@ -18,6 +19,9 @@ function App() {
           </Route>
           <Route path="/Live" element={<ImageDisplay />}>
             <Route index element={<ImageDisplay />} />
+          </Route>
+          <Route path="/" element={<Home />}>
+            <Route index element={<Home />} />
           </Route>
         </Routes>
       </BrowserRouter>

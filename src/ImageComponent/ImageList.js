@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./ImageList.css";
 import AWS from "aws-sdk";
 import axios from "axios";
+import loadingIcon from "./../LiveFeed/loading-carga.gif";
 
 const loadYoloAnnotations = (imageName) => {
   // Replace with the correct URL to your YOLO annotation file
@@ -37,6 +38,16 @@ const ImageList = () => {
   const [selectedList, setSelectedList] = useState();
   const [images1, setImages] = useState([]);
   const [imageUrl, setImageUrl] = useState("");
+  const [showLoading, setShowLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("Loading...");
+
+  const loadingTexts = ["Loading...", "Initializing...", "Hold On..."];
+  let currentTextIndex = 0;
+  const loadingInterval = setInterval(() => {
+    currentTextIndex = (currentTextIndex + 1) % loadingTexts.length;
+    setLoadingText(loadingTexts[currentTextIndex]);
+  }, 1000); // Change text every 2 seconds
+
   const s3 = new AWS.S3({
     accessKeyId: "AKIARWZZ67ATZUF5ROV6",
     secretAccessKey: "SS56EIg0c7O5PD1U9SAcs/gXxp09oFE96KmMXpad",
@@ -110,10 +121,12 @@ const ImageList = () => {
 
   const getImage = (imageName) => {
     // const imageName = "YOUR_IMAGE_NAME.jpg"; // Replace with the name of your image file
+
     s3.getObject(
       { Bucket: "masterprojectbucket", Key: `ReportImages/${imageName}` },
       (err, data) => {
         if (err) {
+          setShowLoading(false);
           console.log(err, err.stack);
         } else {
           const imageUrl = URL.createObjectURL(new Blob([data.Body]));
@@ -123,6 +136,7 @@ const ImageList = () => {
 
             url: imageUrl,
           };
+          console.log(imageJson);
           setSelectedImage(imageJson);
           renderAnnotations(imageJson);
         }
@@ -130,8 +144,10 @@ const ImageList = () => {
     );
   };
   const handleImageClick = (image, index) => {
+    setShowLoading(true);
     setSelectedList(index);
     getImage(image);
+    setShowLoading(false);
   };
 
   const handleReport = async (image) => {
@@ -165,28 +181,27 @@ const ImageList = () => {
           ))}
         </ul>
       </div>
-      {selectedImage && (
-        <div className="selected-image">
-          <h3>{selectedImage.name}</h3>
-          <div className="image-wrapper">
-            {/* <img src={selectedImage.url} alt={selectedImage.name} /> */}
-            {/* <img
-              id="secondImage"
-              src={selectedImage.url}
-              alt={selectedImage.name}
-            /> */}
-            <canvas id="canvas" width="100px"></canvas>
+
+      <div className="selected-image">
+        {showLoading && (
+          <div className="loading">
+            <span className="loading-text">{loadingText}</span>
           </div>
-          <div className="reportDiv">
-            <button
-              className="reportButton"
-              onClick={() => handleReport(selectedImage.name)}
-            >
-              Report
-            </button>
-          </div>
+        )}
+
+        <h3>{selectedImage ? selectedImage.name : "Please select an Image"}</h3>
+        <div className="image-wrapper">
+          <canvas id="canvas" width="100px"></canvas>
         </div>
-      )}
+        <div className="reportDiv">
+          <button
+            className="reportButton"
+            onClick={() => handleReport(selectedImage.name)}
+          >
+            {selectedImage ? "Report" : ""}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap");
 @import "bootstrap/dist/css/bootstrap.min.css";
+@import url("https://fonts.googleapis.com/css2?family=Gabarito:wght@500&family=Poppins:wght@300&display=swap");
+
 .App {
   text-align: center;
 }
@@ -15,6 +17,7 @@
   }
 }
 .body {
+  font-family: "Gabarito", sans-serif;
   font-family: "Poppins", sans-serif;
 }
 .App-header {

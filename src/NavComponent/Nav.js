@@ -11,6 +11,7 @@ const Nav = () => {
   return (
     <div>
       <div className="navbar">
+        <div className="nav-title">Solar Panel Anomaly</div> {/* Added Title */}
         <ul className="nav-menu">
           <li className="nav-item">
             <Link
