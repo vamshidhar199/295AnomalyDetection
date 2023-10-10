@@ -75,3 +75,41 @@
   background-color: #2196f3; /* Adjust background color as needed */
   margin-bottom: 10px; /* Adjust as needed */
 }
+
+.side-image {
+  background-color: white; /* Adjust background color as needed */
+  margin-bottom: 10px; /* Adjust as needed */
+  border-radius: 5px;
+  border-color: grey;
+}
+/* .statusContainer {
+  flex: 1;
+} */
+
+.side-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* or any specific height you want to set */
+}
+
+.side-image-image {
+  width: 80px;
+  padding: 2%;
+}
+
+.side-image-image:hover {
+  transition: transform 0.1s; /* Animation */
+  width: 85px;
+}
+
+.sideImageContainer {
+  display: grid;
+}
+
+.action-sidebar {
+  background-color: grey;
+  color: white;
+  padding: 10px;
+  border-bottom: solid black 4px;
+  margin-bottom: 10px;
+}
