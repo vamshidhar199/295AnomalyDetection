@@ -113,3 +113,44 @@
   border-bottom: solid black 4px;
   margin-bottom: 10px;
 }
+
+.selectTopic {
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.select-box {
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.select-box:hover {
+  border-color: #bbb;
+}
+
+.select-box:focus {
+  outline: none;
+  border-color: #999;
+}
+
+.select-box option {
+  padding: 20px;
+  background-color: white;
+  border-bottom: 1px solid #eee;
+  color: #333; /* Text color for options */
+  font-size: 16px; /* Font size for options */
+}
+
+/* You can add custom styles for specific options if needed */
+.select-box option.special-option {
+  font-weight: bold;
+  background-color: #f0f0f0;
+}

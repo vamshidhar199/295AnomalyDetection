@@ -115,26 +115,80 @@ ul {
   margin: 10px;
 }
 .reportDiv {
-  display: flex !important;
-  justify-content: center;
+  /* display: flex !important; */
+  /* justify-content: center; */
   width: 40%;
+  position: relative;
+  display: inline-block;
 }
-
+.reportButton1 {
+  background-color: #3582c2 !important;
+  backface-visibility: 20%;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  padding: 20px;
+  width: 100%;
+  font-size: 20px;
+  height: 50px;
+}
 .reportButton {
+  margin: 0;
+  padding: 0;
   position: fixed;
   bottom: 0;
-  /* right: 0; */
+  left: 0;
   cursor: pointer;
   margin: 20px;
+  margin-left: 30%;
   background-color: #f55d42 !important;
   backface-visibility: 20%;
   border: none;
   border-radius: 10px;
   color: white;
   padding: 10px;
-  width: 40%;
+  width: 60%;
   justify-content: left;
   font-size: 14px !important;
   font-weight: 800;
   font-family: "Poppins", sans-serif;
+}
+
+.reportButtonWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.additionalButtons {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  bottom: 50%;
+  left: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease-in-out;
+  background: transparent;
+  z-index: 10;
+  width: 100%;
+  /* background-color: white; or any color you prefer */
+  /* border: 1px solid #ccc; optional: for a border around the additional buttons */
+  /* border-radius: 4px; optional: for rounded corners */
+}
+
+.reportDiv:hover .additionalButtons {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.reportButtonWrapper:hover .additionalButtons {
+  display: block;
+}
+
+.additionalButtons button {
+  display: block;
+  margin-top: 5px;
+  padding: 5px 10px;
+  font-size: 12px;
+  border: none; /* removes border from buttons */
+  background-color: transparent; /* makes buttons transparent */
 }

@@ -5,16 +5,25 @@ import ROSLIB from "roslib";
 import cross from "./download.png";
 import tick from "./tick.png";
 import { Buffer } from "buffer";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import AWS from "aws-sdk";
+import AutoTrain from "../AutoTrain/AutoTrain";
 
-const ImageDisplay = () => {
+const ImageDisplay = (props) => {
   const [imageSrc, setImageSrc] = useState("");
   const [rosTopic, setRosTopic] = useState();
   const [loadingText, setLoadingText] = useState("Loading...");
   const [uploadQueue, setUploadQueue] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [topicName, setTopicName] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const s3 = new AWS.S3({
     accessKeyId: "AKIARWZZ67ATZUF5ROV6",
@@ -44,12 +53,29 @@ const ImageDisplay = () => {
 
     // subscribe to the ros topic
     topic.subscribe((message) => {
-      // console.log(message);
-      if (message && message.processed_image.data) {
+      //if required processed image
+      console.log(topicName);
+      if (
+        message &&
+        topicName == "processed_image" &&
+        message.processed_image.data
+      ) {
+        // console.log(message);
         setRosTopic(message);
         setImageSrc(`data:image/jpg;base64,${message.processed_image.data}`);
         clearInterval(loadingInterval);
         setIsStreaming(true);
+        props.setStream("Running");
+      } else if (
+        message &&
+        topicName == "raw_image" &&
+        message.raw_image.data
+      ) {
+        setRosTopic(message);
+        setImageSrc(`data:image/jpg;base64,${message.raw_image.data}`);
+        clearInterval(loadingInterval);
+        setIsStreaming(true);
+        props.setStream("Running");
       }
     });
     // callback to clear the topic subscription when not in the page
@@ -57,8 +83,15 @@ const ImageDisplay = () => {
       topic.unsubscribe();
       clearInterval(loadingInterval);
       setIsStreaming(false);
+      props.setStream("Not Running");
     };
-  }, []); //useeffect end
+  }, [topicName]); //useeffect end
+
+  //Handle the topic selection
+  const handleTopicChange = (event) => {
+    setTopicName(event.target.value);
+    console.log(event.target.value);
+  };
 
   // To handle image capture when the user clicks "Upload"
   const handleCaptureImage = (rosTopicToUpload) => {
@@ -190,6 +223,32 @@ const ImageDisplay = () => {
         // ) : (
         <div class="row " style={{ justifyContent: "center" }}>
           <div className="col-sm-2 side-column">
+            <div className="selectTopic">
+              <select
+                value={topicName}
+                onChange={handleTopicChange}
+                className="select-box"
+              >
+                <option value="raw_image">Raw Image Topic</option>
+                <option value="processed_image">Processed Image Topic</option>
+              </select>
+            </div>
+            <div className="statusContainer">
+              <span
+                className="side-text"
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  setDialogOpen(true);
+                }}
+              >
+                START
+              </span>
+            </div>
+            <div className="statusContainer">
+              <span className="side-text" style={{ backgroundColor: "red" }}>
+                STOP
+              </span>
+            </div>
             <div className="statusContainer">
               {/* <span className="side-text block">
                 CurrentStamp : {new Date().toLocaleTimeString()}
@@ -201,6 +260,7 @@ const ImageDisplay = () => {
                 </span>
               </span>
             </div>
+
             <div className="sideImageContainer">
               <span className="action-sidebar">Actions</span>
               <span className="side-image">
@@ -221,6 +281,23 @@ const ImageDisplay = () => {
         </div>
         // )
       }
+      <Dialog open={dialogOpen} onClose={() => {}}>
+        <DialogTitle></DialogTitle>
+        <DialogContent>
+          <AutoTrain />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setTopicName("processed_image");
+              console.log(topicName);
+              setDialogOpen(false);
+            }}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

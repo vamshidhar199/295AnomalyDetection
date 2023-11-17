@@ -54,14 +54,14 @@ const ImageList = () => {
   });
   const params = {
     Bucket: "masterprojectbucket",
-    Prefix: "ReportImages/",
+    Prefix: "ReportedProcessedImages/",
   };
 
   useEffect(() => {
     async function fetchImages() {
       const data = await s3.listObjectsV2(params).promise();
       const objects = data.Contents.filter((object) => {
-        return object.Key !== "ReportImages/";
+        return object.Key !== "ReportedProcessedImages/";
       });
       console.log(data.Contents);
       setImages(objects);
@@ -123,7 +123,10 @@ const ImageList = () => {
     // const imageName = "YOUR_IMAGE_NAME.jpg"; // Replace with the name of your image file
 
     s3.getObject(
-      { Bucket: "masterprojectbucket", Key: `ReportImages/${imageName}` },
+      {
+        Bucket: "masterprojectbucket",
+        Key: `ReportedProcessedImages/${imageName}`,
+      },
       (err, data) => {
         if (err) {
           setShowLoading(false);
@@ -150,9 +153,14 @@ const ImageList = () => {
     setShowLoading(false);
   };
 
-  const handleReport = async (image) => {
-    const url = `http://localhost:8501/?image=${image}`;
-    window.open(url, "_blank").focus();
+  const handleReport = async (image, type) => {
+    if (type == "annotate") {
+      const url = `http://localhost:8501/?image=${image}`;
+      window.open(url, "_blank").focus();
+    } else {
+      const url = `http://localhost:5000/labeller?image_id=${image}`;
+      window.open(url, "_blank").focus();
+    }
   };
   return (
     <div className="image-list-container">
@@ -170,12 +178,12 @@ const ImageList = () => {
                 className="image-name"
                 onClick={() =>
                   handleImageClick(
-                    image.Key.replace("ReportImages/", ""),
+                    image.Key.replace("ReportedProcessedImages/", ""),
                     index
                   )
                 }
               >
-                {image.Key.replace("ReportImages/", "")}
+                {image.Key.replace("ReportedProcessedImages/", "")}
               </div>
             </li>
           ))}
@@ -194,9 +202,23 @@ const ImageList = () => {
           <canvas id="canvas" width="100px"></canvas>
         </div>
         <div className="reportDiv">
+          <div className="additionalButtons">
+            <button
+              className="reportButton1"
+              onClick={() => handleReport(selectedImage.name, "annotate")}
+            >
+              Report For Annotation
+            </button>
+            <button
+              className="reportButton1"
+              onClick={() => handleReport(selectedImage.name, "segmentation")}
+            >
+              Report For Segmentation
+            </button>
+          </div>
           <button
             className="reportButton"
-            onClick={() => handleReport(selectedImage.name)}
+            // onClick={() => handleReport(selectedImage.name)}
           >
             {selectedImage ? "Report" : ""}
           </button>

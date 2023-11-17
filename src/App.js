@@ -8,7 +8,16 @@ import Nav from "./NavComponent/Nav";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ImageDisplay from "./LiveFeed/test";
 import Home from "./Home/Home";
+import SegmentAuto from "./SegmentAuto/SegmentAuto";
+import { useState } from "react";
+import AutoTrain from "./AutoTrain/AutoTrain";
 function App() {
+  const [trainingStatus, setTrainingStatus] = useState("Idle");
+  const [streamStatus, setStreamStatus] = useState("Not Running");
+
+  const setStream = (value) => {
+    setStreamStatus(value);
+  };
   return (
     <div className="App">
       <BrowserRouter>
@@ -17,11 +26,31 @@ function App() {
           <Route path="/ImageList" element={<ImageList />}>
             <Route index element={<ImageList />} />
           </Route>
-          <Route path="/Live" element={<ImageDisplay />}>
-            <Route index element={<ImageDisplay />} />
+          <Route path="/Live" element={<ImageDisplay setStream={setStream} />}>
+            <Route index element={<ImageDisplay setStream={setStream} />} />
           </Route>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
+          <Route path="/AutoSegment" element={<SegmentAuto />}>
+            <Route index element={<SegmentAuto />} />
+          </Route>
+          <Route
+            path="/AutoTrain"
+            element={<AutoTrain trainingStatus={trainingStatus} />}
+          >
+            <Route
+              index
+              element={<AutoTrain trainingStatus={trainingStatus} />}
+            />
+          </Route>
+          <Route
+            path="/"
+            element={<Home streamStatus={streamStatus} setStream={setStream} />}
+          >
+            <Route
+              index
+              element={
+                <Home streamStatus={streamStatus} setStream={setStream} />
+              }
+            />
           </Route>
         </Routes>
       </BrowserRouter>
